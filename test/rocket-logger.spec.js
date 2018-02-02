@@ -56,7 +56,7 @@ describe("rocket-logger", () => {
                 setTimeout(async () => {
                     const logs = await db.collection(collectionName).find({}).toArray();
                     resolve(logs);
-                }, 300);
+                }, 100);
             });
         };
 
@@ -197,7 +197,7 @@ describe("rocket-logger", () => {
     describe("file transport", () => {
 
         const fileTransportOptions = {
-            filename: "combined.log",
+            filename: "access.log",
             errorFileName: "error.log",
             dirname: "logs"
         };
@@ -219,17 +219,22 @@ describe("rocket-logger", () => {
             return logs[logs.length - 2];
         };
 
+        const awaitSomeTime = (ms = 100) => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, ms);
+            });
+        };
+
         const assertAndGetLog = async () => {
+            await awaitSomeTime();
             const content = await fs.readFileSync(logFilePath);
             return getLatestLog(content);
         };
 
         const assertAndGetErrorLog = async () => {
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve();
-                }, 500);
-            });
+            await awaitSomeTime();
             const content = await fs.readFileSync(errorLogFilePath);
             return getLatestLog(content);
         };

@@ -1,5 +1,5 @@
 # 🚀 rocket-logger
-a sample logger wrapper base on winston
+a sample logger wrapper base on [winston 3.x](https://github.com/winstonjs/winston)
 
 ## Installation
 

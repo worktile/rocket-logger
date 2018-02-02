@@ -1,6 +1,6 @@
 {
   "name": "@worktile/rocket-logger",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "logger wrapper",
   "main": "lib/index.js",
   "scripts": {

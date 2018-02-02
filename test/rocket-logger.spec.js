@@ -4,6 +4,7 @@ const MONGODB_SERVER = "mongodb://localhost:27017/wt-log";
 const MongoClient = require("mongodb").MongoClient;
 const assert = require("assert");
 const helper = require("../lib/helper");
+const fs = require("fs");
 
 describe("rocket-logger", () => {
 
@@ -24,19 +25,20 @@ describe("rocket-logger", () => {
     });
 
     describe("db transport", () => {
+        let dbClient = null;
         let db = null;
 
         before(async () => {
-            const client = await MongoClient.connect(MONGODB_SERVER, {
+            dbClient = await MongoClient.connect(MONGODB_SERVER, {
                 poolSize: 1
             });
-            db = client.db(client.s.options.dbName);
+            db = dbClient.db(dbClient.s.options.dbName);
             await db.collection("logs").remove({});
             await db.collection("errors").remove({});
         });
 
         after(async () => {
-            // db.close();
+            dbClient.close();
         });
 
         const dbOptions = {
@@ -172,4 +174,99 @@ describe("rocket-logger", () => {
         });
     });
 
+    describe("file transport", () => {
+
+        const fileTransportOptions = {
+            filename: "combined.log",
+            errorFileName: "error.log",
+            dirname: "logs"
+        };
+        const logger = RocketLogger.create({
+            file: fileTransportOptions
+        });
+        const logFilePath = `${fileTransportOptions.dirname}/${fileTransportOptions.filename}`;
+        const errorLogFilePath = `${fileTransportOptions.dirname}/${fileTransportOptions.errorFileName}`;
+
+        before(async () => {
+            fs.truncateSync(logFilePath);
+            fs.truncateSync(errorLogFilePath);
+        });
+
+        const getLatestLog = function (content) {
+            const logs = content.toString().split("\n");
+            assert.notEqual(logs, null);
+            assert.equal(logs.length > 0, true);
+            return logs[logs.length - 2];
+        };
+
+        const assertAndGetLog = async () => {
+            const content = await fs.readFileSync(logFilePath);
+            return getLatestLog(content);
+        };
+
+        const assertAndGetErrorLog = async () => {
+            const content = await fs.readFileSync(errorLogFilePath);
+            return getLatestLog(content);
+        };
+
+
+        it("info simple message", async () => {
+            const message = "this is log message";
+            logger.info(message);
+            const log = await assertAndGetLog();
+            assert.equal(log, `{"level":"info","message":"this is log message"}`);
+        });
+
+        it("info simple message with meta", async () => {
+            const message = "this is log message with meta";
+            logger.info(message, {action: "addUser"});
+            const log = await assertAndGetLog();
+            assert.equal(log, `{"action":"addUser","level":"info","message":"this is log message with meta"}`);
+        });
+
+
+        it("error simple message", async () => {
+            const message = "this is error message";
+            logger.error(message);
+            const errorLog = await assertAndGetErrorLog();
+            assert.equal(errorLog, `{"level":"error","message":"this is error message"}`);
+        });
+
+        it("error simple message with meta", async () => {
+            const message = "this is error message with meta";
+            logger.error(message, {meta: "addUser"});
+            const errorLog = await assertAndGetErrorLog();
+            assert.equal(errorLog, `{"meta":"addUser","level":"error","message":"this is error message with meta"}`);
+        });
+
+        it("error Object Error", async () => {
+            const message = "this is custom error message";
+            const error = new Error(message);
+            error.name = "error name";
+            logger.error(error);
+            const errorLog = await assertAndGetErrorLog();
+            const logObject = JSON.parse(errorLog);
+            assert.equal(logObject.level, "error");
+            assert.equal(logObject.message, message);
+            assert.notEqual(logObject.stack, null);
+            assert.equal(logObject.name, error.name);
+        });
+
+        it("error Object Error with meta", async () => {
+            const message = "this is custom error message with meta";
+            const error = new Error(message);
+            const meta = {
+                name: "errorName",
+                desc: "error desc"
+            };
+            logger.error(error, meta);
+            const errorLog = await assertAndGetErrorLog();
+            const logObject = JSON.parse(errorLog);
+            assert.equal(logObject.level, "error");
+            assert.equal(logObject.message, message);
+            assert.notEqual(logObject.stack, null);
+            assert.equal(logObject.name, meta.name);
+            assert.equal(logObject.desc, meta.desc);
+        });
+    });
 });

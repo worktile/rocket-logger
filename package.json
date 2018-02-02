@@ -2,7 +2,7 @@
   "name": "rocket-logger",
   "version": "0.0.1",
   "description": "logger wrapper",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "mocha"
   },

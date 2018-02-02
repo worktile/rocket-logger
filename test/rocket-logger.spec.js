@@ -35,6 +35,7 @@ describe("rocket-logger", () => {
             db = dbClient.db(dbClient.s.options.dbName);
             await db.collection("logs").remove({});
             await db.collection("errors").remove({});
+            await db.collection("custom-logs").remove({});
         });
 
         after(async () => {
@@ -172,6 +173,25 @@ describe("rocket-logger", () => {
             assert.equal(log.meta.action, meta.action);
             assert.equal(log.meta.user, meta.user);
         });
+
+        it("log to my custom collection", async () => {
+            const dbOptions = {
+                mongodbServer: MONGODB_SERVER,
+                collection: "custom-logs",
+                errorCollection: "custom-logs",
+            };
+
+            const logger = RocketLogger.create({
+                db: dbOptions
+            });
+            const message = "this is custom logger message";
+            logger.info(message);
+            const logs = await getLogs(dbOptions.collection);
+            assert.notEqual(logs, null);
+            assert.equal(logs.length > 0, true);
+            assert.notEqual(logs[0], null);
+            assert.equal(logs[0].message, message);
+        });
     });
 
     describe("file transport", () => {
@@ -205,6 +225,11 @@ describe("rocket-logger", () => {
         };
 
         const assertAndGetErrorLog = async () => {
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 500);
+            });
             const content = await fs.readFileSync(errorLogFilePath);
             return getLatestLog(content);
         };

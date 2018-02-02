@@ -33,3 +33,4 @@ logger.error(new Error(`type invalid`));
 // logger.info("this is info");
 // logger.info("this is info1");
 // logger.info("this is info", {en: 111});
+

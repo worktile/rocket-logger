@@ -19,7 +19,7 @@ const options = {
         maxFiles: 10
     }
 };
-const logger = RocketLogger.create();
+const logger = RocketLogger.create(options);
 
 logger.debug("this is debug message");
 logger.info("this is info message");

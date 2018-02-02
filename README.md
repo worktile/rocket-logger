@@ -1,6 +1,10 @@
 # 🚀 rocket-logger
 a sample logger wrapper base on winston
 
+## Installation
+
+`npm install @worktile/rocket-logger --save`
+
 ## Usage
 ```
 const options = {

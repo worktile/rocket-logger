@@ -20,9 +20,16 @@
 const RocketLogger = require("../lib/index");
 
 const logger = RocketLogger.create({
-    console: true
+    db: {
+        mongodbServer: "mongodb://localhost:27017/wt-log"
+    }
+    // console: true
 });
-
-logger.info("this is info");
-logger.info("this is info1");
-logger.info("this is info", {en: 111});
+logger.error(new Error(`type invalid`));
+// logger.error("this is error", {
+//     error_message: "error_message",
+//     stack: "yes"
+// });
+// logger.info("this is info");
+// logger.info("this is info1");
+// logger.info("this is info", {en: 111});

@@ -8,7 +8,7 @@ const options = {
         mongodbServer: "mongodb://localhost:27017/wt-log",
         collection: "", // default logs
         errorCollection: "", // default errors
-        collectionOptions: {}, // Mongodb connect options
+        mongodbOptions: {}, // Mongodb connect options
     },
     console: true,
     file: {

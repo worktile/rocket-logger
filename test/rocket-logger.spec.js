@@ -105,6 +105,71 @@ describe("rocket-logger", () => {
             assert.equal(log.meta.name, meta.name);
             assert.equal(log.meta.description, meta.description);
         });
+
+        it("error simple message", async () => {
+            const message = "this is error message";
+            logger.error(message);
+            const errorLogs = await getLogs("errors");
+            assert.equal(helper.isArray(errorLogs), true);
+            assert.equal(errorLogs.length > 0, true);
+            const log = assertMessageAndGetLog(message, errorLogs);
+            assert.equal(log.level, "error");
+            assert.equal(log.label, dbOptions.label);
+        });
+
+        it("error message with meta object", async () => {
+            const message = "this is error message with meta object";
+            const meta = {
+                error_message: "error message",
+                stack: "yes this is stack"
+            };
+            logger.error(message, meta);
+            const errorLogs = await getLogs("errors");
+            assert.equal(helper.isArray(errorLogs), true);
+            assert.equal(errorLogs.length > 0, true);
+            const log = assertMessageAndGetLog(message, errorLogs);
+            assert.equal(log.level, "error");
+            assert.equal(log.label, dbOptions.label);
+            assert.notEqual(log.meta, null);
+            assert.equal(log.meta.error_message, meta.error_message);
+            assert.equal(log.meta.stack, meta.stack);
+        });
+
+        it("error with new Error", async () => {
+            const message = "this is custom error message";
+            const error = new Error(message);
+            error.action = "test";
+            logger.error(error);
+            const errorLogs = await getLogs("errors");
+            assert.equal(helper.isArray(errorLogs), true);
+            assert.equal(errorLogs.length > 0, true);
+            const log = assertMessageAndGetLog(message, errorLogs);
+            assert.equal(log.level, "error");
+            assert.equal(log.label, dbOptions.label);
+            assert.notEqual(log.meta, null);
+            assert.notEqual(log.meta.stack, null);
+            assert.equal(log.meta.action, error.action);
+        });
+
+        it("error log new Error with meta", async () => {
+            const message = "this is custom error message with meta";
+            const meta = {
+                action: "AddUser",
+                user: "why520crazy"
+            };
+            const error = new Error(message);
+            logger.error(error, meta);
+            const errorLogs = await getLogs("errors");
+            assert.equal(helper.isArray(errorLogs), true);
+            assert.equal(errorLogs.length > 0, true);
+            const log = assertMessageAndGetLog(message, errorLogs);
+            assert.equal(log.level, "error");
+            assert.equal(log.label, dbOptions.label);
+            assert.notEqual(log.meta, null);
+            assert.notEqual(log.meta.stack, null);
+            assert.equal(log.meta.action, meta.action);
+            assert.equal(log.meta.user, meta.user);
+        });
     });
 
 });

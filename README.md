@@ -1,6 +1,11 @@
 # 🚀 rocket-logger
 a sample logger wrapper base on [winston 3.x](https://github.com/winstonjs/winston)
 
+## Features
+
+1. support log to MongoDB;
+1. quickly create owner logger by configuration options;
+
 ## Installation
 
 `npm install @worktile/rocket-logger --save`

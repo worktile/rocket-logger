@@ -18,7 +18,8 @@
   "homepage": "https://github.com/worktile/rocket-logger#readme",
   "dependencies": {
     "mongodb": "^3.0.2",
-    "winston": "^3.0.0-rc1"
+    "winston-transport": "^4.4.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

@@ -1,6 +1,6 @@
 {
   "name": "@worktile/rocket-logger",
-  "version": "0.0.4",
+  "version": "2.0.0",
   "description": "logger wrapper",
   "main": "lib/index.js",
   "scripts": {
@@ -17,13 +17,15 @@
   },
   "homepage": "https://github.com/worktile/rocket-logger#readme",
   "dependencies": {
+    "@elastic/elasticsearch": "^7.13.0",
+    "lodash.iserror": "^3.1.1",
+    "lodash.isobject": "^3.0.2",
+    "lodash.isstring": "^4.0.1",
     "mongodb": "^3.0.2",
-    "winston-transport": "^4.4.0",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "winston-transport": "^4.4.0"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.1",
-    "eslint": "^4.16.0",
-    "mocha": "^5.0.0"
+    "eslint": "^7.29.0"
   }
 }

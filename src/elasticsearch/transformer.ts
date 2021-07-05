@@ -1,4 +1,4 @@
-import isObject from "lodash.isobject";
+import * as _ from "lodash";
 
 export const transformer = function(logData) {
     const transformed: any = {};
@@ -48,7 +48,7 @@ export const transformer = function(logData) {
                 if (allowKeys.includes(key)) {
                     newMeta[key] = meta[key];
                 } else if (convertToTextKey.includes(key)) {
-                    if (isObject(meta[key])) {
+                    if (_.isObject(meta[key])) {
                         newMeta[key] = JSON.stringify(meta[key]);
                     } else {
                         newMeta[key] = meta[key];

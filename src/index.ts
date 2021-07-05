@@ -1,15 +1,7 @@
 import * as winston from "winston";
 import { ElasticsearchTransport } from "./elasticsearch";
 import * as elasticsearch from "@elastic/elasticsearch";
-import isObject from "lodash.isobject";
-import isError from "lodash.iserror";
-import isString from "lodash.isstring";
-
-const _ = {
-    isObject,
-    isError,
-    isString
-}
+import * as _ from "lodash";
 
 const DEFAULT_OPTIONS = {
     file: {
@@ -98,8 +90,8 @@ export class RocketLogger {
         return meta;
     }
 
-    getWinstonLoggerMeta(meta) {
-        if (_.isObject(meta)) {
+    getWinstonLoggerMeta(meta: any) {
+        if (_.isObject(meta) as any) {
             meta.label = this.options.label;
             return meta;
         } else if (meta) {

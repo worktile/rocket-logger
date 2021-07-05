@@ -15,8 +15,6 @@ declare class RocketLogger {
     warn(message: string, meta?: object): void;
 }
 
-export = RocketLogger;
-
 declare namespace RocketLogger {
     export interface ExtendFileTransportOptions extends FileTransportOptions {
         errorFileName?: string

@@ -32,6 +32,7 @@ declare namespace RocketLogger {
         file?: ExtendFileTransportOptions | boolean;
         es?: ClientOptions;
         console?: ConsoleTransportOptions | boolean;
+        label: string;
     }
     
 }

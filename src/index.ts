@@ -70,8 +70,11 @@ export class RocketLogger {
         }
 
         if (this.options.console) {
-            errorLoggerOptions.format = loggerOptions.format = winston.format.combine(winston.format.colorize(), winston.format.simple());
-            errorLoggerOptions.transports = loggerOptions.transports = [new winston.transports.Console()];
+            if (_.isArray(loggerOptions.transports) && loggerOptions.transports.length) {
+                loggerOptions.transports.push(new winston.transports.Console());
+            } else {
+                errorLoggerOptions.transports = loggerOptions.transports = [new winston.transports.Console()];
+            }
         }
 
         this.defaultLogger = winston.createLogger(loggerOptions);

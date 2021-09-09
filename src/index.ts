@@ -99,10 +99,11 @@ export class RocketLogger {
             return meta;
         } else if (meta) {
             return {
-                _metaMessage: meta
+                _metaMessage: meta,
+                label: this.options.label
             };
         } else {
-            return null;
+            return { label: this.options.label };
         }
     }
 
